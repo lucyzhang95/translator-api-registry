@@ -32,6 +32,7 @@ tags:
 - name: query
 - name: translator
 - name: biothings
+- name: metadata
 paths:
   "/association/{id}":
     get:
@@ -118,8 +119,8 @@ paths:
           application/json:
             example:
               ids:
-              - "Disease_biolink:has_biomarker_Gene_GDSC_cancer_specific_signatures.csv_2998"
-              - "Protein_biolink:physically_interacts_with_Protein_Biogrid_formated.csv_170247"
+              - "UniProtKB:P25103"
+              - "MONDO:0004643"
             schema:
               type: object
               properties:
