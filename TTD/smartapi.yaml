@@ -47,8 +47,6 @@ paths:
         available for a specific association, it will be ignored. Note that the attribute names are 
         case-sensitive.
 
-
-        Just like the query service, you can also pass a "callback" parameter to make a JSONP call.
       parameters:
       - name: id
         in: path
@@ -57,18 +55,13 @@ paths:
         schema:
           type: string
       - "$ref": "#/components/parameters/fields"
-      - "$ref": "#/components/parameters/callback"
-      - "$ref": "#/components/parameters/email"
       ## this is useful even when it's not noted in the docs
-      - "$ref": "#/components/parameters/size"
-      ## these are noted in the /spec endpoint; commenting out for now
-      # - "$ref": "#/components/parameters/raw"
-      # - "$ref": "#/components/parameters/rawquery"
-      # - "$ref": "#/components/parameters/dotfield"
-      # - "$ref": "#/components/parameters/_sorted"
-      # - "$ref": "#/components/parameters/always_list"
-      # - "$ref": "#/components/parameters/allow_null"
-      # - "$ref": "#/components/parameters/format"
+      - "$ref": "#/components/parameters/raw"
+      - "$ref": "#/components/parameters/rawquery"
+      - "$ref": "#/components/parameters/dotfield"
+      - "$ref": "#/components/parameters/always_list"
+      - "$ref": "#/components/parameters/allow_null"
+      - "$ref": "#/components/parameters/format"
       responses:
         '200':
           description: A 200 status code indicates a successful query, and is accompanied by the query response payload.
@@ -77,8 +70,8 @@ paths:
       #       application/json:
       #         schema:
       #           $ref: '#/components/schemas/Association'
-      #   '404':
-      #     description: A response indicating an unknown association ID
+       '404':
+         description: A response indicating an unknown association ID
       summary: >-
         Retrieve association based on ID
       tags:
@@ -103,24 +96,19 @@ paths:
         schema:
           type: string
       - "$ref": "#/components/parameters/fields"
-      - "$ref": "#/components/parameters/email"
-      ## this is useful even when it's not noted in the docs
-      - "$ref": "#/components/parameters/size"
-      ## these are noted in the /spec endpoint; commenting out for now
-      # - "$ref": "#/components/parameters/raw"
-      # - "$ref": "#/components/parameters/rawquery"
-      # - "$ref": "#/components/parameters/dotfield"
-      # - "$ref": "#/components/parameters/_sorted"
-      # - "$ref": "#/components/parameters/always_list"
-      # - "$ref": "#/components/parameters/allow_null"
-      # - "$ref": "#/components/parameters/format"
+      - "$ref": "#/components/parameters/raw"
+      - "$ref": "#/components/parameters/rawquery"
+      - "$ref": "#/components/parameters/dotfield"
+      - "$ref": "#/components/parameters/always_list"
+      - "$ref": "#/components/parameters/allow_null"
+      - "$ref": "#/components/parameters/format"
       requestBody:
         content:
           application/json:
             example:
               ids:
-              - "UniProtKB:P25103"
-              - "MONDO:0004643"
+              - ""
+              - ""
             schema:
               type: object
               properties:
@@ -139,9 +127,8 @@ paths:
   "/metadata":
     get:
       description: Get metadata about the data available from the API
-      ## these are noted in the https://mychem.info/v1/spec endpoint; commenting out for now
-      # parameters:
-      # - "$ref": "#/components/parameters/format"
+      parameters:
+      - "$ref": "#/components/parameters/format"
       # - "$ref": "#/components/parameters/raw"
       responses:
         '200':
@@ -152,11 +139,11 @@ paths:
     get:
       description: Get metadata about the data fields available from the API
       ## these are noted in the https://mychem.info/v1/spec endpoint; commenting out for now
-      # parameters:
-      # - "$ref": "#/components/parameters/format"
+      parameters:
+      - "$ref": "#/components/parameters/format"
       # - "$ref": "#/components/parameters/raw"
-      # - "$ref": "#/components/parameters/search"
-      # - "$ref": "#/components/parameters/prefix"
+      - "$ref": "#/components/parameters/search"
+      - "$ref": "#/components/parameters/prefix"
       responses:
         '200':
           description: A 200 status code indicates a successful query, and is accompanied by the query response payload.
@@ -175,7 +162,7 @@ paths:
           API](https://docs.mychem.info/en/latest/doc/chem_query_service.html#query-syntax).
         in: query
         required: true
-        example: subject.NCBIGene:"NCBIGene:91526"
+        example: subject.pubchem_compound: "6323491"
         schema:
           type: string
       - "$ref": "#/components/parameters/fields"
@@ -186,19 +173,16 @@ paths:
       - "$ref": "#/components/parameters/sort"
       - "$ref": "#/components/parameters/facets"
       - "$ref": "#/components/parameters/facet_size"
-      - "$ref": "#/components/parameters/callback"
       - "$ref": "#/components/parameters/dotfield"
-      - "$ref": "#/components/parameters/email"
       ## these are noted in the /spec endpoint; commenting out for now
-      # - "$ref": "#/components/parameters/aggs"
+      - "$ref": "#/components/parameters/aggs"
       # - "$ref": "#/components/parameters/userquery"
       # - "$ref": "#/components/parameters/explain"
       # - "$ref": "#/components/parameters/raw"
       # - "$ref": "#/components/parameters/rawquery"
-      # - "$ref": "#/components/parameters/_sorted"
-      # - "$ref": "#/components/parameters/always_list"
-      # - "$ref": "#/components/parameters/allow_null"
-      # - "$ref": "#/components/parameters/format"
+      - "$ref": "#/components/parameters/always_list"
+      - "$ref": "#/components/parameters/allow_null"
+      - "$ref": "#/components/parameters/format"
       responses:
         '200':
           description: A 200 status code indicates a successful query, and is accompanied by the query response payload.
@@ -207,12 +191,12 @@ paths:
       #       application/json:
       #         schema:
       #           "$ref": "#/components/schemas/QueryResult"
-      #   '400':
+        '400':
       #     content:
       #       application/json:
       #         schema:
       #           "$ref": "#/components/schemas/ErrorResult"
-      #     description: A response indicating an improperly formatted query
+          description: A response indicating an improperly formatted query
       # summary: Make queries and return matching gene hits. Supports JSONP and CORS
       #   as well.
       tags:
@@ -273,10 +257,10 @@ paths:
           application/json:
             example:
               q:
-              - "NCBIGene:91526"
-              - "NCBIGene:5788"
+              - "6323491"
+              - ""
               scopes:
-              - "subject.NCBIGene"
+              - "subject.pubchem_compound"
             schema:
               type: object
               properties:
@@ -301,12 +285,12 @@ paths:
       #       application/json:
       #         schema:
       #           "$ref": "#/components/schemas/QueryPOSTResult"
-      #   '400':
+        '400':
       #     content:
       #       application/json:
       #         schema:
       #           "$ref": "#/components/schemas/ErrorResult"
-      #     description: A response indicating an improperly formatted query
+          description: A response indicating an improperly formatted query
       # summary: Make batch gene queries and return matching gene hits
       tags:
       - query
