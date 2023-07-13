@@ -6,7 +6,7 @@ info:
     x-role: responsible developers
   description: >-
     Documentation of the BioThings API for [TherapeuticTargetDatabase](https://db.idrblab.net/ttd/).
-    This KP contains drug-disease, protein target-disease, drug-protein target, and biomarker-disease associations.
+    This KP contains drug-disease, target-disease, drug-protein target, and biomarker-disease associations.
   termsOfService: https://biothings.io/about
   title: Biothings Therapeutic Target Database API
   version: '1.0'
@@ -54,10 +54,10 @@ paths:
         example: "101481444_interacts_with_O60885"
         schema:
           type: string
+      ## fields is the most useful parameter
       - "$ref": "#/components/parameters/fields"
-      ## this is useful even when it's not noted in the docs
-      - "$ref": "#/components/parameters/raw"
-      - "$ref": "#/components/parameters/rawquery"
+      # - "$ref": "#/components/parameters/raw"
+      # - "$ref": "#/components/parameters/rawquery"
       - "$ref": "#/components/parameters/dotfield"
       - "$ref": "#/components/parameters/always_list"
       - "$ref": "#/components/parameters/allow_null"
@@ -70,8 +70,8 @@ paths:
       #       application/json:
       #         schema:
       #           $ref: '#/components/schemas/Association'
-       '404':
-         description: A response indicating an unknown association ID
+        '404':
+          description: A response indicating an unknown association ID
       summary: >-
         Retrieve association based on ID
       tags:
@@ -88,7 +88,6 @@ paths:
           Accepts multiple association ids separated by commas. Note that currently we only take ids up to 
           1000 maximum, the rest will be omitted.
 
-
           The request body can also be used to provide these ids.
         in: query
         ## setting to false since putting this info in the request body seems to work as well
@@ -96,8 +95,8 @@ paths:
         schema:
           type: string
       - "$ref": "#/components/parameters/fields"
-      - "$ref": "#/components/parameters/raw"
-      - "$ref": "#/components/parameters/rawquery"
+      # - "$ref": "#/components/parameters/raw"
+      # - "$ref": "#/components/parameters/rawquery"
       - "$ref": "#/components/parameters/dotfield"
       - "$ref": "#/components/parameters/always_list"
       - "$ref": "#/components/parameters/allow_null"
@@ -107,8 +106,8 @@ paths:
           application/json:
             example:
               ids:
-              - ""
-              - ""
+              - "136183441_interacts_with_Q16548"
+              - "P17301_target_for_0005301"
             schema:
               type: object
               properties:
@@ -122,6 +121,7 @@ paths:
       responses:
         '200':
           description: A 200 status code indicates a successful query, and is accompanied by the query response payload.
+      ## No '404' is included in the post due to batch query
       tags:
       - association
   "/metadata":
@@ -138,7 +138,6 @@ paths:
   "/metadata/fields":
     get:
       description: Get metadata about the data fields available from the API
-      ## these are noted in the https://mychem.info/v1/spec endpoint; commenting out for now
       parameters:
       - "$ref": "#/components/parameters/format"
       # - "$ref": "#/components/parameters/raw"
@@ -162,7 +161,7 @@ paths:
           API](https://docs.mychem.info/en/latest/doc/chem_query_service.html#query-syntax).
         in: query
         required: true
-        example: subject.pubchem_compound: "6323491"
+        example: "object.mondo:0005083"
         schema:
           type: string
       - "$ref": "#/components/parameters/fields"
@@ -237,28 +236,27 @@ paths:
         schema:
           type: string
       - "$ref": "#/components/parameters/fields"
-      - "$ref": "#/components/parameters/email"
       ## this is useful even when it's not noted in the docs
       - "$ref": "#/components/parameters/size"
       - "$ref": "#/components/parameters/from"
       - "$ref": "#/components/parameters/fetch_all"
       - "$ref": "#/components/parameters/scroll_id"
       ## these are noted in the https://mychem.info/v1/spec endpoint; commenting out for now
-      # - "$ref": "#/components/parameters/sort"
+      - "$ref": "#/components/parameters/sort"
       # - "$ref": "#/components/parameters/raw"
       # - "$ref": "#/components/parameters/rawquery"
-      # - "$ref": "#/components/parameters/dotfield"
+      - "$ref": "#/components/parameters/dotfield"
       # - "$ref": "#/components/parameters/_sorted"
-      # - "$ref": "#/components/parameters/always_list"
-      # - "$ref": "#/components/parameters/allow_null"
-      # - "$ref": "#/components/parameters/format"
+      - "$ref": "#/components/parameters/always_list"
+      - "$ref": "#/components/parameters/allow_null"
+      - "$ref": "#/components/parameters/format"
       requestBody:
         content:
           application/json:
             example:
               q:
               - "6323491"
-              - ""
+              - "136183441"
               scopes:
               - "subject.pubchem_compound"
             schema:
@@ -310,7 +308,7 @@ paths:
       - $ref: '#/components/x-bte-kgs-operations/gene-geneticallyInteracts-gene'
       - $ref: '#/components/x-bte-kgs-operations/gene-geneticallyInteracts-gene-rev'
       - $ref: '#/components/x-bte-kgs-operations/gene-negativelyCorrelated-gene'
-      - $ref: '#/components/x-bte-kgs-operations/gene-negativelyCorrelated-gene-rev'  
+      - $ref: '#/components/x-bte-kgs-operations/gene-negativelyCorrelated-gene-rev'
       - $ref: '#/components/x-bte-kgs-operations/gene-positivelyCorrelated-gene'
       - $ref: '#/components/x-bte-kgs-operations/gene-positivelyCorrelated-gene-rev'
 components:
@@ -398,7 +396,7 @@ components:
     from:
       name: from
       description: >-
-        Optional, the number of matching hits to skip, starting from 0. Default: 0. 
+        Optional, the number of matching hits to skip, starting from 0. Default: 0.
       in: query
       required: false
       schema:
@@ -579,12 +577,12 @@ components:
   ##   gene_associated_with_condition, has_biomarker, physically_interacts_with,
   ##   physically_interacts_with, genetically_interacts_with,
   ##   negatively_correlated_with, positively_correlated_with
-  ## - BTE automatically puts prefix on MONDO IDs, but prefix has to be added to other ID inputs 
+  ## - BTE automatically puts prefix on MONDO IDs, but prefix has to be added to other ID inputs
   ## - currently, BTE will also accept response with Translator-prefix (api-response-transform module).
   ## - joinSafe is only needed if the delimiter isn't a comma
     gene-sensitivity-chem:
     ##  https://biothings.ncats.io/biggim_drugresponse_kp/query?q=predicate:"biolink:associated_with_sensitivity_to"
-    ##  95994 records  
+    ##  95994 records
       - supportBatch: true
         useTemplating: true ## flag to say templating is being used below
         inputs:
@@ -688,7 +686,7 @@ components:
         #     oneOutput: "NCBIGene:26119"               ## LDLRAP1
     gene-associated-disease:
     ##  https://biothings.ncats.io/biggim_drugresponse_kp/query?q=predicate:"biolink:gene_associated_with_condition"
-    ##  922 records  
+    ##  922 records
       - supportBatch: true
         useTemplating: true ## flag to say templating is being used below
         inputs:
@@ -720,7 +718,7 @@ components:
           - id: MONDO
             semantic: Disease
         requestBodyType: object
-        requestBody:  
+        requestBody:
           body: >-
             {
               "q": [ {{ queryInputs | replPrefix('MONDO') | wrap( '["' , '","biolink:gene_associated_with_condition"]') }} ],
@@ -740,14 +738,14 @@ components:
         #     oneOutput: "NCBIGene:7157"      ## TP53
     disease-biomarker-gene:
     ##  https://biothings.ncats.io/biggim_drugresponse_kp/query?q=predicate:"biolink:has_biomarker"
-    ##  13811 records  
+    ##  13811 records
       - supportBatch: true
         useTemplating: true ## flag to say templating is being used below
         inputs:
           - id: MONDO
             semantic: Disease
         requestBodyType: object
-        requestBody:  
+        requestBody:
           body: >-
             {
               "q": [ {{ queryInputs | replPrefix('MONDO') | wrap( '["' , '","biolink:has_biomarker"]') }} ],
@@ -844,7 +842,7 @@ components:
         #     oneOutput: "PUBCHEM.COMPOUND:5455"      ## Thiram
     gene-physicallyInteracts-gene:
     ##  https://biothings.ncats.io/biggim_drugresponse_kp/query?q=predicate:"biolink:physically_interacts_with"
-    ##  888994 records  
+    ##  888994 records
       - supportBatch: true
         useTemplating: true ## flag to say templating is being used below
         inputs:
@@ -896,7 +894,7 @@ components:
         #     oneOutput: "NCBIGene:6881"    ## TAF10
     gene-geneticallyInteracts-gene:
     ##  https://biothings.ncats.io/biggim_drugresponse_kp/query?q=predicate:"biolink:genetically_interacts_with"
-    ##  10754 records  
+    ##  10754 records
       - supportBatch: true
         useTemplating: true ## flag to say templating is being used below
         inputs:
@@ -948,7 +946,7 @@ components:
         #     oneOutput: "NCBIGene:4609"      ## MYC
     gene-negativelyCorrelated-gene:
     ##  https://biothings.ncats.io/biggim_drugresponse_kp/query?q=predicate:"biolink:negatively_correlated_with"
-    ##  565 records  
+    ##  565 records
       - supportBatch: true
         useTemplating: true ## flag to say templating is being used below
         inputs:
@@ -1000,7 +998,7 @@ components:
         #     oneOutput: "NCBIGene:1072"      ## CFL1
     gene-positivelyCorrelated-gene:
     ##  https://biothings.ncats.io/biggim_drugresponse_kp/query?q=predicate:"biolink:positively_correlated_with"
-    ##  437054 records  
+    ##  437054 records
       - supportBatch: true
         useTemplating: true ## flag to say templating is being used below
         inputs:
